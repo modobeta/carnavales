@@ -1,0 +1,12 @@
+node_modules/
+.env
+.env.*
+!.env.example
+.env.local
+dist/
+coverage/
+*.log
+.opencode/
+.DS_Store
+*.txt
+!README.md

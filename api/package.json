@@ -1,0 +1,27 @@
+{
+  "name": "carnavales-api",
+  "version": "1.0.0",
+  "description": "API de Carnavales con autenticación mediante Better Auth",
+  "type": "module",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js",
+    "migrate": "npx auth@1.6.27 migrate",
+    "backfill-names": "node scripts/backfill-names.js",
+    "test": "cross-env NODE_ENV=test node --test src/tests/*.test.js"
+  },
+  "dependencies": {
+    "better-auth": "^1.6.27",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.0",
+    "express-rate-limit": "^8.6.2",
+    "helmet": "^8.0.0",
+    "nodemailer": "^9.0.5",
+    "pg": "^8.12.0"
+  },
+  "devDependencies": {
+    "cross-env": "^10.1.0"
+  }
+}
