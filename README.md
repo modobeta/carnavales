@@ -65,6 +65,18 @@ npm run migrate
 npm run dev
 ```
 
+En Windows PowerShell, si `npm run migrate` falla porque la ejecución de
+`npm.ps1` está deshabilitada, ejecuta el mismo script mediante el lanzador de
+Windows:
+
+```powershell
+npm.cmd run migrate
+```
+
+Este error pertenece a la política de ejecución de PowerShell, no a Better
+Auth. El comando debe ejecutarse desde el directorio `api`, igual que el
+comando original.
+
 La API queda disponible por defecto en `http://localhost:3000`.
 
 ### 2. Cliente
