@@ -50,7 +50,15 @@ NODE_ENV=development
 PORT=3000
 ```
 
-Después crea la base de datos, ejecuta la migración e inicia la API:
+La base de datos PostgreSQL debe existir antes de ejecutar la migración. Créala
+manualmente con PostgreSQL (por ejemplo, desde `psql` o pgAdmin):
+
+```sql
+CREATE DATABASE carnavales_dev;
+```
+
+Usa el mismo nombre de base de datos que aparece en `DATABASE_URL`. Después,
+ejecuta la migración para crear las tablas de Better Auth e inicia la API:
 
 ```bash
 npm run migrate
