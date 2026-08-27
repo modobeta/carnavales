@@ -1,4 +1,5 @@
 import nodemailer from "nodemailer";
+import { passwordResetEmail } from "./email-templates.js";
 
 class ConsoleEmailAdapter {
   constructor({ env, logger }) {
@@ -89,14 +90,7 @@ export async function sendPasswordResetEmail(
       to: user.email,
       subject: "Recupera tu contraseña - Carnavales",
       resetUrl,
-      html: `
-        <p>Hola,</p>
-        <p>Recibimos una solicitud para restablecer tu contraseña.</p>
-        <p>Haz clic en el siguiente enlace para crear una nueva contraseña:</p>
-        <p><a href="${resetUrl}">${resetUrl}</a></p>
-        <p>Este enlace expirará en 30 minutos.</p>
-        <p>Si no solicitaste este cambio, puedes ignorar este mensaje.</p>
-      `,
+      html: passwordResetEmail({ url: resetUrl }),
     });
     return true;
   } catch {

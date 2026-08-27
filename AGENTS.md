@@ -52,6 +52,11 @@ En desarrollo, el adaptador `console` imprime el código OTP. En producción,
 la aplicación exige el adaptador `smtp`, nunca registra el código y almacena
 el OTP cifrado mediante Better Auth.
 
+El OTP se entrega mediante `email.service.js` usando plantillas HTML profesionales
+de `email-templates.js`. El adaptador de consola solo se permite fuera de
+producción; en producción se exige SMTP (Gmail u otro). Los OTP se almacenan
+cifrados y nunca deben aparecer en logs de producción.
+
 ---
 
 # 2. Principios obligatorios
@@ -123,7 +128,7 @@ No implementar manualmente:
 - tokens de recuperación
 - tokens de verificación
 - rotación de sesiones
-- envío de OTP
+- almacenamiento, verificación o cifrado propio de OTP
 
 si Better Auth ya proporciona una implementación segura para ello.
 
@@ -159,13 +164,14 @@ Nunca almacenar tokens de autenticación sensibles en:
 api/
 ├── src/
 │   ├── auth/
-│   │   └── auth.js            # Configuración Better Auth
+│   │   └── auth.js            # Configuración Better Auth, 2FA y recuperación
 │   ├── middleware/
 │   │   └── auth.middleware.js  # requireAuth y requireTwoFactor
 │   ├── routes/
 │   │   └── protected.routes.js # Rutas /api/me, /api/enable-2fa, /api/health
 │   ├── services/
-│   │   └── email.service.js    # Adaptadores console y SMTP
+│   │   ├── email.service.js    # Adaptadores console y SMTP seguros
+│   │   └── email-templates.js  # Plantillas HTML profesionales (OTP, Reset)
 │   └── server.js               # Express + Better Auth
 ├── .env
 ├── .env.example
@@ -176,7 +182,7 @@ El backend debe mantener separación entre:
 
 - routes → definen endpoints, delegan a controllers
 - controllers → lógica HTTP, validación, respuestas
-- services → lógica de negocio
+- services → lógica de negocio (email.service.js, email-templates.js)
 - middleware → cross-cutting concerns (auth, logging)
 
 ---
@@ -225,7 +231,8 @@ siendo válido y muestra el modal a pantalla completa.
 - Parameterized queries (`$1, $2...`) siempre
 - Constraints, foreign keys, índices para integridad
 - No almacenar passwords en texto plano
-- Better Auth gestiona los OTP; no implementar almacenamiento manual
+- Better Auth gestiona los OTP; configurar `storeOTP: "encrypted"` y no
+  implementar almacenamiento o verificación manual
 
 ---
 
@@ -277,6 +284,7 @@ siendo válido y muestra el modal a pantalla completa.
 ## Autorización
 
 - `requireAuth` protege los endpoints personalizados actuales
+- `requireTwoFactor` protege los datos autenticados hasta verificar el segundo factor
 - RBAC, permisos granulares y ownership todavía no están implementados
 - Frontend solo UX, no seguridad
 
@@ -307,7 +315,7 @@ siendo válido y muestra el modal a pantalla completa.
 | SMTP_HOST | Servidor SMTP |
 | SMTP_PORT | Puerto SMTP |
 | SMTP_USER | Usuario SMTP |
-| SMTP_PASSWORD | Contraseña SMTP |
+| SMTP_PASSWORD | Contraseña SMTP (App Password de Gmail en producción) |
 | EMAIL_PROVIDER | `console` en desarrollo o `smtp` en producción |
 | EMAIL_FROM | Email remitente |
 | PASSWORD_RESET_TOKEN_TTL | TTL del token de recuperación |
@@ -361,9 +369,9 @@ Usar estas Skills al desarrollar, modificar o revisar código.
 
 ## Framework
 
-- Node.js test runner en API y cliente
-- Tests de API en `api/src/tests/`
-- Tests del cliente en `client/src/lib/*.test.js`
+- Node.js test runner
+- Tests en `api/src/tests/`
+- Pruebas de backend y pruebas unitarias de utilidades frontend
 
 ---
 
@@ -395,6 +403,7 @@ npm run dev
 - `BETTER_AUTH_SECRET` con valor fuerte
 - `NODE_ENV=production`
 - HTTPS habilitado
-- SMTP real configurado
+- SMTP real configurado (Gmail con App Password u otro proveedor)
 - Helmet habilitado
 - CORS restringido
+- Adaptador de correo distinto de `console`

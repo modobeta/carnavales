@@ -6,6 +6,7 @@ import {
   emailService,
   sendPasswordResetEmail,
 } from "../services/email.service.js";
+import { otpEmail } from "../services/email-templates.js";
 
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
@@ -55,13 +56,7 @@ export const auth = betterAuth({
             to: user.email,
             subject: "Tu código de verificación - Carnavales",
             otp,
-            html: `
-              <p>Hola,</p>
-              <p>Tu código de verificación es:</p>
-              <p><strong>${otp}</strong></p>
-              <p>El código expira en pocos minutos.</p>
-              <p>Si no intentaste iniciar sesión, ignora este mensaje.</p>
-            `,
+            html: otpEmail({ otp }),
           });
         },
       },
