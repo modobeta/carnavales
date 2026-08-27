@@ -102,6 +102,11 @@ npm run dev
 
 El cliente queda disponible por defecto en `http://localhost:5173`.
 
+Una vez que ambos servidores estén corriendo, abre `http://localhost:5173` y
+**registrá una cuenta** desde `/register` antes de intentar iniciar sesión.
+No hay usuarios preexistentes en la base de datos; la primera sesión se crea
+desde el formulario de registro.
+
 ## Verificación
 
 Pruebas automatizadas de la API:
